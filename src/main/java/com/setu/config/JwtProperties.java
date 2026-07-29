@@ -1,4 +1,4 @@
-package com.setu;
+package com.setu.config;
 
 //package com.gharsetu.config;
 

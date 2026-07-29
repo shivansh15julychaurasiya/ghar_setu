@@ -9,7 +9,7 @@ import javax.crypto.SecretKey;
 
 import org.springframework.stereotype.Service;
 
-import com.setu.JwtProperties;
+import com.setu.config.JwtProperties;
 import com.setu.entity.User;
 import com.setu.service.JwtService;
 
@@ -68,6 +68,24 @@ public class JwtServiceImpl implements JwtService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+    
+    @Override
+    public boolean isTokenExpired(String token) {
+
+        return getClaims(token)
+                .getExpiration()
+                .before(new Date());
+    }
+    
+    @Override
+    public String extractTokenFromHeader(String header) {
+
+        if (header == null || !header.startsWith("Bearer ")) {
+            return null;
+        }
+
+        return header.substring(7);
     }
 
 }

@@ -28,7 +28,6 @@ public class RegisterRequest {
     @Email(message = "Invalid email")
     private String email;
 
-    @NotNull(message = "Role Id is required")
-    private Long roleId;
+ 
 
 }

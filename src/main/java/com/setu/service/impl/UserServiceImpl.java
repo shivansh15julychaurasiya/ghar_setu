@@ -1,11 +1,16 @@
 package com.setu.service.impl;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.setu.dto.response.UserResponse;
 import com.setu.entity.User;
+import com.setu.exception.BadRequestException;
 import com.setu.exception.ResourceNotFoundException;
+import com.setu.mapper.AuthMapper;
 import com.setu.repository.UserRepository;
+import com.setu.security.CustomUserDetails;
 import com.setu.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -15,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    private final AuthMapper authMapper;
 
     @Override
     public User getByMobile(String mobile) {
@@ -32,10 +39,7 @@ public class UserServiceImpl implements UserService {
                         new ResourceNotFoundException("User not found."));
     }
 
-    @Override
-    public UserResponse getCurrentUser() {
-        return null;
-    }
+  
 
     @Override
     public UserResponse toResponse(User user) {
@@ -48,5 +52,23 @@ public class UserServiceImpl implements UserService {
                 .email(user.getEmail())
                 .accountStatus(user.getAccountStatus())
                 .build();
+    }
+    
+    @Override
+    public UserResponse getCurrentUser() {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new BadRequestException("User is not authenticated.");
+        }
+
+        CustomUserDetails userDetails =
+                (CustomUserDetails) authentication.getPrincipal();
+
+        User user = userDetails.getUser();
+
+        return authMapper.toResponse(user);
     }
 }

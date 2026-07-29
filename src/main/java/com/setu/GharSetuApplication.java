@@ -5,8 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+import com.setu.config.JwtProperties;
+
 @EnableJpaAuditing
-@EnableConfigurationProperties(JwtProperties.class)
+
 @SpringBootApplication
 public class GharSetuApplication {
 
